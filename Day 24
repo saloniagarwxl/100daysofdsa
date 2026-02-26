@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node definition
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Function to create a new node
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to append a node at the end
+void append(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+// Function to delete first occurrence of key
+void deleteFirstOccurrence(Node** head, int key) {
+    Node* current = *head;
+    Node* prev = NULL;
+
+    // If head node itself holds the key
+    if (current != NULL && current->data == key) {
+        *head = current->next;
+        free(current);
+        return;
+    }
+
+    // Search for the key
+    while (current != NULL && current->data != key) {
+        prev = current;
+        current = current->next;
+    }
+
+    // If key not found
+    if (current == NULL) return;
+
+    // Unlink the node and free memory
+    prev->next = current->next;
+    free(current);
+}
+
+// Function to print linked list
+void printList(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) printf(" ");
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    int n, key;
+    scanf("%d", &n);
+
+    Node* head = NULL;
+    for (int i = 0; i < n; i++) {
+        int val;
+        scanf("%d", &val);
+        append(&head, val);
+    }
+
+    scanf("%d", &key);
+
+    deleteFirstOccurrence(&head, key);
+    printList(head);
+
+    // Free memory
+    Node* current = head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+
+    return 0;
+}
