@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *arr;
+    int front;
+    int rear;
+    int size;
+    int capacity;
+} CircularQueue;
+
+// Initialize queue
+CircularQueue* createQueue(int k) {
+    CircularQueue* q = (CircularQueue*)malloc(sizeof(CircularQueue));
+    q->arr = (int*)malloc(sizeof(int) * k);
+    q->capacity = k;
+    q->size = 0;
+    q->front = 0;
+    q->rear = -1;
+    return q;
+}
+
+// Enqueue operation
+void enqueue(CircularQueue* q, int value) {
+    if (q->size == q->capacity) return; // full
+    q->rear = (q->rear + 1) % q->capacity;
+    q->arr[q->rear] = value;
+    q->size++;
+}
+
+// Dequeue operation
+void dequeue(CircularQueue* q) {
+    if (q->size == 0) return; // empty
+    q->front = (q->front + 1) % q->capacity;
+    q->size--;
+}
+
+// Display queue elements
+void display(CircularQueue* q) {
+    if (q->size == 0) return;
+    int i;
+    for (i = 0; i < q->size; i++) {
+        int index = (q->front + i) % q->capacity;
+        printf("%d ", q->arr[index]);
+    }
+}
+
+int main() {
+    int n, m, i, value;
+    scanf("%d", &n);
+
+    CircularQueue* q = createQueue(n);
+
+    for (i = 0; i < n; i++) {
+        scanf("%d", &value);
+        enqueue(q, value);
+    }
+
+    scanf("%d", &m);
+
+    for (i = 0; i < m; i++) {
+        dequeue(q);
+    }
+
+    display(q);
+
+    free(q->arr);
+    free(q);
+    return 0;
+}
